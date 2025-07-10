@@ -1,30 +1,56 @@
 import React, { memo } from "react";
 import { motion } from "framer-motion";
 import { IMAGES } from "../../utils/resourses";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTE } from "../../utils/routes";
+import { STORAGE_KEYS, useLocalStorage } from "../../hooks/localstorage";
 
 function Header() {
   const location = useLocation();
+  const [storeToken, , removeToken] = useLocalStorage(STORAGE_KEYS.TOKEN);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log("Logged out");
+    removeToken();
+    navigate(ROUTE.LOGIN);
   };
 
-  const navLinks = [
+  const currentPath = location.pathname;
+
+  const unauthNavLinks = [
+    {
+      label: "Signup",
+      link: ROUTE.REGISTER,
+      show: currentPath !== ROUTE.REGISTER,
+    },
+    {
+      label: "Login",
+      link: ROUTE.LOGIN,
+      show: currentPath !== ROUTE.LOGIN,
+    },
     {
       label: "Task List",
       link: ROUTE.HOME,
-    },
-    {
-      label: "Profile",
-      link: ROUTE.PROFIlE,
-    },
-    {
-      label: "Logout",
-      action: handleLogout,
+      show: true,
     },
   ];
+
+  const navLinks = storeToken
+    ? [
+        {
+          label: "Task List",
+          link: ROUTE.HOME,
+        },
+        {
+          label: "Profile",
+          link: ROUTE.PROFIlE,
+        },
+        {
+          label: "Logout",
+          action: handleLogout,
+        },
+      ]
+    : unauthNavLinks.filter((item) => item.show);
 
   return (
     <motion.header

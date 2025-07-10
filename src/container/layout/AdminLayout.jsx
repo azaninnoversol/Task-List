@@ -3,7 +3,7 @@ import Header from "../../components/Header/Header";
 import { Outlet } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
 
-function Layout() {
+function AdminLayout() {
   return (
     <div className="min-h-screen flex flex-col justify-between">
       <Header />
@@ -13,4 +13,4 @@ function Layout() {
   );
 }
 
-export default memo(Layout);
+export default memo(AdminLayout);
