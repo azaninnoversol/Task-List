@@ -4,7 +4,6 @@ import TaskCard from "../../../components/TaskCard/TaskCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../../utils/routes";
 import Input from "../../../components/Input/Input";
-import { BiMenu } from "react-icons/bi";
 
 function TaskList() {
   const navigate = useNavigate();
@@ -17,15 +16,12 @@ function TaskList() {
           className="w-full sm:w-[300px]"
         />
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-          <Button
-            className="w-full sm:w-auto"
-            onClick={() => navigate(ROUTE.ADD_TASK)}
-          >
-            + Add New Task
-          </Button>
-          <BiMenu size={60} className="cursor-pointer" />
-        </div>
+        <Button
+          className="w-full sm:w-auto"
+          onClick={() => navigate(ROUTE.ADD_TASK)}
+        >
+          + Add New Task
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-start gap-6 gap-y-10 justify-between px-4 sm:px-20 pb-10">

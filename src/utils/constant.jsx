@@ -1,4 +1,4 @@
-export const DropdownOpt = [
+export const options = [
   { label: "January", value: "january" },
   { label: "February", value: "february" },
   { label: "March", value: "march" },

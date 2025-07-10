@@ -4,6 +4,7 @@ import TaskList from "../container/pages/TaskList/TaskList";
 export const ROUTE = {
   HOME: "/",
   ADD_TASK: "/add-task",
+  PROFIlE: "/profile",
 };
 
 export const AUTHENTICATED_ROUTES = [
