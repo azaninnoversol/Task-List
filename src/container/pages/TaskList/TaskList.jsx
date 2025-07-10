@@ -1,19 +1,38 @@
 import React, { memo } from "react";
-import InputSearch from "../../../components/InputSearch/InputSearch";
 import Button from "../../../components/Button/Button";
-import Dropdown from "../../../components/Dropdown/Dropdown";
-import { DropdownOpt } from "../../../utils/constant";
+import TaskCard from "../../../components/TaskCard/TaskCard";
+import { useNavigate } from "react-router-dom";
+import { ROUTE } from "../../../utils/routes";
+import Input from "../../../components/Input/Input";
+import { BiMenu } from "react-icons/bi";
 
 function TaskList() {
+  const navigate = useNavigate();
   return (
     <section className="min-h-[70vh] w-full">
-      <main className="flex items-center justify-between w-full px-20">
-        <InputSearch />
-        <div className="flex items-center gap-2">
-          <Button>+ Add New Task</Button>
-          <Dropdown options={DropdownOpt} />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full px-4 sm:px-20 gap-4 sm:gap-0 py-6">
+        <Input
+          type="search"
+          placeholder="Search Task...."
+          className="w-full sm:w-[300px]"
+        />
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => navigate(ROUTE.ADD_TASK)}
+          >
+            + Add New Task
+          </Button>
+          <BiMenu size={60} className="cursor-pointer" />
         </div>
-      </main>
+      </div>
+
+      <div className="flex flex-wrap items-start gap-6 gap-y-10 justify-between px-4 sm:px-20 pb-10">
+        {[...Array(10)].map((_, index) => (
+          <TaskCard key={index} />
+        ))}
+      </div>
     </section>
   );
 }
