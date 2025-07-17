@@ -12,3 +12,9 @@ export const options = [
   { label: "November", value: "november" },
   { label: "December", value: "december" },
 ];
+
+export default function TokenGenerator() {
+  return (
+    "TOKEN-" + Math.random().toString(36).substr(2) + Date.now().toString(36)
+  );
+}

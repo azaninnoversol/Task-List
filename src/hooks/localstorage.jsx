@@ -37,3 +37,20 @@ export const useLocalStorage = (key, initialValue = "") => {
 
   return [storedValue, setValue, removeValue];
 };
+
+function saveInLocalStorge(key, data) {
+  let res;
+  if (typeof data === "object") {
+    res = localStorage.setItem(key, JSON.stringify(data));
+  } else {
+    res = localStorage.setItem(key, data);
+  }
+  return res;
+}
+
+function getFromLocalStorage(key) {
+  const user = localStorage.getItem(key);
+  return user ? JSON.parse(user) : null;
+}
+
+export { saveInLocalStorge, getFromLocalStorage };

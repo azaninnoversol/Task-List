@@ -7,6 +7,9 @@ import Input from "../../../components/Input/Input";
 
 function TaskList() {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const isAuthenticated = Boolean(token);
+
   return (
     <section className="min-h-[70vh] w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full px-4 sm:px-20 gap-4 sm:gap-0 py-6">
@@ -15,13 +18,14 @@ function TaskList() {
           placeholder="Search Task...."
           className="w-full sm:w-[300px]"
         />
-
-        <Button
-          className="w-full sm:w-auto"
-          onClick={() => navigate(ROUTE.ADD_TASK)}
-        >
-          + Add New Task
-        </Button>
+        {isAuthenticated && (
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => navigate(ROUTE.ADD_TASK)}
+          >
+            + Add New Task
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-wrap items-start gap-6 gap-y-10 justify-between px-4 sm:px-20 pb-10">

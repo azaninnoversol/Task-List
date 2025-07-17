@@ -21,19 +21,9 @@ export const UN_AUTHENTICATED_ROUTES = [
     route: ROUTE.LOGIN,
     element: <AuthForm />,
   },
-  {
-    key: ROUTE.HOME,
-    route: ROUTE.HOME,
-    element: <TaskList />,
-  },
 ];
 
 export const AUTHENTICATED_ROUTES = [
-  {
-    key: ROUTE.HOME,
-    route: ROUTE.HOME,
-    element: <TaskList />,
-  },
   {
     key: ROUTE.ADD_TASK,
     route: ROUTE.ADD_TASK,
