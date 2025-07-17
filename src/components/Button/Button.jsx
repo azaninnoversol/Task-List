@@ -1,6 +1,13 @@
 import React, { memo } from "react";
 
-function Button({ children, className = "", variant = "primary", ...rest }) {
+function Button({
+  children,
+  className = "",
+  variant = "primary",
+  loading = "",
+  disabled = "",
+  ...rest
+}) {
   const baseStyles =
     "inline-flex items-center justify-center px-5 py-2 rounded-md font-medium transition cursor-pointer";
 
@@ -16,7 +23,11 @@ function Button({ children, className = "", variant = "primary", ...rest }) {
   }
 
   return (
-    <button className={`${baseStyles} ${variantStyles} ${className}`} {...rest}>
+    <button
+      className={`${baseStyles} ${variantStyles} ${className}`}
+      disabled={disabled}
+      {...rest}
+    >
       {children}
     </button>
   );

@@ -1,20 +1,16 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { motion } from "framer-motion";
 import Input from "../../../components/Input/Input";
 import Button from "../../../components/Button/Button";
-import {
-  getFromLocalStorage,
-  saveInLocalStorge,
-  STORAGE_KEYS,
-  useLocalStorage,
-} from "../../../hooks/localstorage";
+import { STORAGE_KEYS, useLocalStorage } from "../../../hooks/localstorage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTE } from "../../../utils/routes";
-import TokenGenerator from "../../../utils/constant";
 import { errorToast, successToast } from "../../../utils/toast";
+import { registerUser, loginUser } from "../../../firebase/authService";
 
 function AuthForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const methods = useForm();
   const {
     handleSubmit,
@@ -54,41 +50,41 @@ function AuthForm() {
     },
   };
 
-  const onSubmit = (data) => {
-    if (isRegister) {
-      saveInLocalStorge("AuthForm", {
-        ...data,
-      });
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      let res;
+      if (isRegister) {
+        const { email, username, password } = data;
+        res = await registerUser({ email, name: username, password });
 
-      successToast("User registered successfully!");
-      const token = TokenGenerator();
-      setToken(token);
-      reset();
-      navigate(ROUTE.HOME);
-    } else {
-      const getData = getFromLocalStorage("AuthForm");
-
-      if (getData) {
-        const isValidUser =
-          getData.username === data.username &&
-          getData.email === data.email &&
-          getData.password === data.password;
-
-        if (isValidUser) {
-          const token = TokenGenerator();
-          setToken(token);
-          successToast("Login successful!");
+        if (res?.accessToken) {
+          successToast("User registered successfully!");
+          setToken(res?.accessToken);
           reset();
           navigate(ROUTE.HOME);
         } else {
-          errorToast("Invalid credentials!");
+          errorToast(res?.error || res?.error?.message || "Please Try Again!");
         }
       } else {
-        errorToast("No user found. Please register first.");
+        res = await loginUser({ email: data.email, password: data.password });
+
+        if (res?.accessToken) {
+          successToast("Login successful!");
+          setToken(res?.accessToken);
+          reset();
+          navigate(ROUTE.HOME);
+        } else {
+          errorToast(res?.error || res?.error?.message || "Please Try Again!");
+        }
       }
+    } catch (error) {
+      setIsLoading(false);
+      errorToast("Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
   };
-
   return (
     <FormProvider {...methods}>
       <section className="flex justify-center items-center px-4">
@@ -150,9 +146,12 @@ function AuthForm() {
 
             <Button
               type="submit"
-              className="bg-[var(--color-accent)] text-white hover:opacity-90"
+              disabled={isLoading}
+              className={`bg-[var(--color-accent)] text-white ${
+                isLoading ? "opacity-70 cursor-not-allowed" : "hover:opacity-90"
+              }`}
             >
-              Submit
+              {isLoading ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </motion.form>

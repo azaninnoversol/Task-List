@@ -1,16 +1,39 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { motion } from "framer-motion";
 import Input from "../../../components/Input/Input";
 import Button from "../../../components/Button/Button";
+import { rules } from "../../../utils/constant";
+import { errorToast, successToast } from "../../../utils/toast";
+import { addTaskToFirestore } from "../../../firebase/taskService";
+import { useParams } from "react-router-dom";
 
 function AddTask() {
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
   const methods = useForm();
-  const { handleSubmit, reset } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = methods;
 
-  const onSubmit = (data) => {
-    console.log("✅ Task Submitted:", data);
-    reset();
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      const res = await addTaskToFirestore(data);
+      if (res) {
+        successToast("Add Task Successfully!");
+        reset();
+      } else {
+        errorToast("Something went wrong, please try again!");
+      }
+    } catch (error) {
+      errorToast("Unexpected error occurred.");
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -24,40 +47,52 @@ function AddTask() {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="max-w-7xl w-7xl mt-10 p-6 rounded-xl bg-[var(--color-card)] text-[var(--color-text)] border border-[var(--color-border-soft)] shadow-lg space-y-4"
         >
-          <h2 className="text-2xl font-semibold mb-4">Add New Task</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            {id ? "Edit New Task" : "Add New Task"}
+          </h2>
 
           <Input
             type="text"
             label="Task"
             placeholder="Task title"
-            {...methods.register("task")}
+            {...methods.register("task", rules.task)}
+            errors={errors.task?.message}
           />
 
           <Input
             type="textarea"
             label="Problem"
             placeholder="Describe the issue..."
-            {...methods.register("problem")}
+            {...methods.register("problem", rules.problem)}
+            errors={errors.problem?.message}
           />
 
           <Input
             type="text"
             label="Time Taken"
             placeholder="e.g. 1h 30m"
-            {...methods.register("time")}
+            {...methods.register("time", rules.time)}
+            errors={errors.time?.message}
           />
 
           <Input
             type="url"
             label="Solution Link"
             placeholder="https://..."
-            {...methods.register("solution")}
+            {...methods.register("solution", rules.solution)}
+            errors={errors.solution?.message}
           />
 
-          <Input type="date" label="Date" {...methods.register("date")} />
+          <Input
+            type="date"
+            label="Date"
+            {...methods.register("date", rules.date)}
+            errors={errors.date?.message}
+          />
 
           <div className="flex justify-end gap-3 pt-4">
             <Button
+              variant="secondary"
               type="button"
               onClick={() => reset()}
               className="border border-[var(--color-border)] hover:bg-[var(--color-border)]"
@@ -66,9 +101,12 @@ function AddTask() {
             </Button>
             <Button
               type="submit"
-              className="bg-[var(--color-accent)] text-white hover:opacity-90"
+              disabled={isLoading}
+              className={`bg-[var(--color-accent)] text-white ${
+                isLoading ? "opacity-70 cursor-not-allowed" : "hover:opacity-90"
+              }`}
             >
-              Submit
+              {isLoading ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </motion.form>

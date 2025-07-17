@@ -15,18 +15,16 @@ function Header() {
     navigate(ROUTE.LOGIN);
   };
 
-  const currentPath = location.pathname;
-
   const unauthNavLinks = [
     {
       label: "Signup",
       link: ROUTE.REGISTER,
-      show: currentPath !== ROUTE.REGISTER,
+      show: location.pathname !== ROUTE.REGISTER,
     },
     {
       label: "Login",
       link: ROUTE.LOGIN,
-      show: currentPath !== ROUTE.LOGIN,
+      show: location.pathname !== ROUTE.LOGIN,
     },
     {
       label: "Task List",

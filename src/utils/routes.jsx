@@ -1,10 +1,10 @@
 import AddTask from "../container/pages/AddTask/AddTask";
 import AuthForm from "../container/pages/AuthForm/AuthForm";
-import TaskList from "../container/pages/TaskList/TaskList";
 
 export const ROUTE = {
   HOME: "/",
-  ADD_TASK: "/add-task",
+  ADD_TASK: "/task/add-task",
+  EDIT_TASK: "/task/edit-task/:id",
   PROFIlE: "/profile",
   REGISTER: "/register",
   LOGIN: "/login",
@@ -27,6 +27,11 @@ export const AUTHENTICATED_ROUTES = [
   {
     key: ROUTE.ADD_TASK,
     route: ROUTE.ADD_TASK,
+    element: <AddTask />,
+  },
+  {
+    key: ROUTE.EDIT_TASK,
+    route: ROUTE.EDIT_TASK,
     element: <AddTask />,
   },
 ];
