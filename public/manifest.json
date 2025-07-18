@@ -14,7 +14,7 @@
     }
   ],
   "start_url": ".",
-  "display": "FlowTask",
+  "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#3b82f6"
 }

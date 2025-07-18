@@ -73,17 +73,18 @@ function TaskCard({
       </div>
 
       <div className="text-sm space-y-1">
-        <p>
+        <p className="truncate w-full">
           <strong>Problem:</strong> {problem}
         </p>
-        <p>
+
+        <p className="truncate w-full">
           <strong>Time:</strong> {time}
         </p>
-        <p>
+        <p className="truncate w-full">
           <strong>Date:</strong> {date}{" "}
           <span className="text-xs opacity-70">({getDayName(date)})</span>
         </p>
-        <p>
+        <p className="truncate w-full">
           <strong>Solution:</strong>{" "}
           <a href="#" className="text-[var(--color-accent)] underline">
             {solution}

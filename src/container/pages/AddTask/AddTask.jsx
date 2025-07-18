@@ -1,15 +1,21 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { motion } from "framer-motion";
 import Input from "../../../components/Input/Input";
 import Button from "../../../components/Button/Button";
 import { rules } from "../../../utils/constant";
 import { errorToast, successToast } from "../../../utils/toast";
-import { addTaskToFirestore } from "../../../firebase/taskService";
-import { useParams } from "react-router-dom";
+import {
+  addTaskToFirestore,
+  getTaskById,
+  updateTaskById,
+} from "../../../firebase/taskService";
+import { useNavigate, useParams } from "react-router-dom";
+import { ROUTE } from "../../../utils/routes";
 
 function AddTask() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const methods = useForm();
   const {
@@ -21,20 +27,56 @@ function AddTask() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const res = await addTaskToFirestore(data);
+      let res;
+      if (id) {
+        console.log(id, "id");
+        res = await updateTaskById(id, data);
+      } else {
+        res = await addTaskToFirestore(data);
+      }
+
       if (res) {
-        successToast("Add Task Successfully!");
+        successToast(
+          id ? "Task updated successfully!" : "Task added successfully!"
+        );
+        navigate(ROUTE.HOME);
         reset();
       } else {
         errorToast("Something went wrong, please try again!");
       }
     } catch (error) {
+      console.log(error, "error");
       errorToast("Unexpected error occurred.");
       setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchTaskById = async () => {
+      if (!id) return;
+      setIsLoading(true);
+      try {
+        const taskData = await getTaskById(id);
+        if (taskData) {
+          reset({
+            task: taskData.task || "",
+            problem: taskData.problem || "",
+            time: taskData.time || "",
+            solution: taskData.solution || "",
+            date: taskData.date || "",
+          });
+        }
+      } catch (error) {
+        errorToast("Failed to load task for editing.");
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTaskById();
+  }, [id, reset]);
 
   return (
     <FormProvider {...methods}>
@@ -106,7 +148,13 @@ function AddTask() {
                 isLoading ? "opacity-70 cursor-not-allowed" : "hover:opacity-90"
               }`}
             >
-              {isLoading ? "Submitting..." : "Submit"}
+              {isLoading
+                ? id
+                  ? "Updating..."
+                  : "Submitting..."
+                : id
+                ? "Update"
+                : "Submit"}
             </Button>
           </div>
         </motion.form>
